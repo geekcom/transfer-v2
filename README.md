@@ -23,9 +23,11 @@ A simple RESTful non-blocking API, to send and receive money.
 ## Installation
 
 * Clone or download this repository;
-* In your terminal run: `docker-compose up -d`;
+* In your terminal run: `docker-compose up`;
 * Rename `.env.example` to `.env`
 * In your terminal execute the commands:
+    * `docker network create transfer-network`
+    * `docker volume create --name=mongo-database`
     * `docker exec -it transfer-api composer install`
     * `docker exec -it transfer-api php artisan key:generate`
     * `docker exec -it transfer-api php artisan migrate:fresh --seed`
