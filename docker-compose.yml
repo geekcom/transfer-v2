@@ -1,0 +1,42 @@
+version: "3.9"
+services:
+
+  transfer-api:
+    build:
+      context: docker
+      dockerfile: Dockerfile
+    container_name: transfer-api
+    restart: unless-stopped
+    volumes:
+      - .:/var/www/app
+    env_file: .env
+    expose:
+      - 8000
+    ports:
+      - '${APP_PORT}:8000'
+    networks:
+      - transfer-network
+
+  transfer-mongo:
+    image: mongo:latest
+    container_name: transfer-mongo
+    restart: always
+    volumes:
+      - ./docker/mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: 123456
+      MONGO_INITDB_DATABASE: transfer
+    ports:
+      - '27017:27017'
+    networks:
+      - transfer-network
+
+networks:
+  transfer-network:
+    external: true
+    name: transfer-network
+
+volumes:
+  mongo-database:
+    external: true

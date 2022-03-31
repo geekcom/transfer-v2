@@ -1,0 +1,26 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Transfer Money API",
+        "contact": {
+            "email": "geekcom@php.net"
+        },
+        "version": "1.0.0"
+    },
+    "paths": {
+        "/api/v1/health": {
+            "get": {
+                "summary": "Check API health",
+                "operationId": "4007bacb94db2cad9d5b2b73d79543eb",
+                "responses": {
+                    "200": {
+                        "description": "success"
+                    }
+                }
+            }
+        }
+    },
+    "security": [
+        []
+    ]
+}
