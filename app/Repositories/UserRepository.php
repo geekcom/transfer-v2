@@ -18,9 +18,9 @@ use Illuminate\Support\Facades\Validator;
 
 final class UserRepository implements UserRepositoryContract
 {
-    protected $user;
-    protected $consultExternalApiService;
-    protected $notificationUserApiService;
+    protected User $user;
+    protected ConsultExternalApiService $consultExternalApiService;
+    protected NotificationUserApiService $notificationUserApiService;
 
     /**
      * UserRepository constructor.

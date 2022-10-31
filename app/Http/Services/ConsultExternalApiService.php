@@ -3,6 +3,7 @@
 namespace App\Http\Services;
 
 use Illuminate\Http\Exceptions\HttpResponseException;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Http;
 
 /**
@@ -11,7 +12,7 @@ use Illuminate\Support\Facades\Http;
  */
 class ConsultExternalApiService
 {
-    public function authorize()
+    public function authorize(): JsonResponse|int
     {
         try {
             $response = Http::get(env('CONSULT_EXTERNAL_API_SERVICE'));

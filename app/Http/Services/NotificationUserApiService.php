@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\Log;
  */
 class NotificationUserApiService
 {
-    public function notify()
+    public function notify(): void
     {
         try {
             $response = Http::get(env('NOTIFICATION_USER_API_SERVICE'));
