@@ -1,9 +1,9 @@
-version: "3.9"
-services:
+version: "3.8"
 
+services:
   transfer-api:
     build:
-      context: docker
+      context: ./docker
       dockerfile: Dockerfile
     container_name: transfer-api
     restart: unless-stopped
@@ -13,7 +13,9 @@ services:
     expose:
       - 8000
     ports:
-      - '${APP_PORT}:8000'
+      - '${APP_PORT:-8000}:8000'
+    entrypoint: ["/bin/bash", "/var/www/app/docker/entrypoint.sh"]
+    command: ["php", "artisan", "octane:start", "--server=swoole", "--host=0.0.0.0"]
     networks:
       - transfer-network
 
@@ -36,7 +38,3 @@ networks:
   transfer-network:
     external: true
     name: transfer-network
-
-volumes:
-  mongo-database:
-    external: true

@@ -1,49 +1,50 @@
-FROM php:8.1.4-cli-alpine
+FROM php:8.1.4-cli
 
-RUN apk --no-cache upgrade && \
-    apk --no-cache  \
-    add  \
-    bash  \
-    git  \
-    sudo  \
-    openssh \
-    libxml2-dev  \
-    oniguruma-dev \
+# Atualiza os pacotes e instala dependências do sistema
+RUN apt-get update && apt-get upgrade -y && \
+    apt-get install -y \
+    bash \
+    git \
+    sudo \
+    openssh-client \
+    libxml2-dev \
+    libonig-dev \
     autoconf \
     gcc \
     g++ \
     make \
     npm \
-    freetype-dev \
-    libjpeg-turbo-dev \
+    libfreetype6-dev \
+    libjpeg62-turbo-dev \
     libpng-dev \
     libzip-dev \
-    openssl-dev \
-    curl-dev \
-    icu-dev
+    libssl-dev \
+    libcurl4-openssl-dev \
+    libicu-dev \
+    libssh2-1-dev \
+    unzip \
+    pkg-config \
+    libpq-dev
 
-# PHP: Install php extensions
-RUN pecl channel-update pecl.php.net
-RUN pecl install pcov ssh2 mongodb
+# Instala extensões PHP
+RUN pecl install pcov ssh2 && \
+    pecl install mongodb-1.15.0
+RUN docker-php-ext-enable pcov ssh2 mongodb
 RUN docker-php-ext-configure gd --with-freetype --with-jpeg
-RUN docker-php-ext-install mbstring xml pcntl gd zip sockets pdo pdo_mysql bcmath soap
-RUN docker-php-ext-enable mbstring xml gd zip pcov pcntl sockets bcmath pdo pdo_mysql soap mongodb
-RUN docker-php-ext-configure intl && docker-php-ext-install intl
+RUN docker-php-ext-install mbstring xml pcntl gd zip sockets pdo pdo_mysql bcmath soap intl
 
-# install and compile swoole from source
+# Instala o Swoole
 RUN cd /tmp && git clone https://github.com/swoole/swoole-src.git && \
     cd swoole-src && \
-    phpize  && \
+    phpize && \
     ./configure && \
-    make && make install
-#config swoole
-RUN touch /usr/local/etc/php/conf.d/openswoole.ini && \
-    echo 'extension=swoole.so' > /usr/local/etc/php/conf.d/swoole.ini
+    make -j$(nproc) && make install
 
+RUN echo "extension=swoole.so" > /usr/local/etc/php/conf.d/swoole.ini
+
+# Instalar o Composer
 RUN curl -sS https://getcomposer.org/installer | php -- \
-     --install-dir=/usr/local/bin --filename=composer
+    --install-dir=/usr/local/bin --filename=composer
 
-# Application directory
-WORKDIR "/var/www/app"
-
+WORKDIR /var/www/app
 CMD php artisan octane:start --server="swoole" --host="0.0.0.0"
