@@ -1,4 +1,4 @@
-FROM php:8.1.4-cli
+FROM php:8.2.0-cli
 
 # Atualiza os pacotes e instala dependências do sistema
 RUN apt-get update && apt-get upgrade -y && \
